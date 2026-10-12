@@ -1,7 +1,5 @@
 # The 100 Prisoners Problem with One Allowed Failure
 
-[日本語 / Japanese](README.ja.md) · [Reproduction guide](docs/reproduction.md) · [Round 7 proof and verification](docs/round7-verification.en.md)
-
 Documentation updated **2026-10-12**; research record through **2026-10-09, Round 7**. This repository records a research relay involving ChatGPT, Claude, Codex, and Perplexity. It separates mathematical proofs, explicit constructions checked by exhaustive computation, restricted searches, and unresolved optimality questions.
 
 **Allowing one failure makes it possible to strictly improve on ordinary cycle following.** A general construction guarantees an improvement of at least $1/495000$ in the 100-person problem. For eight prisoners, a saved strategy rescues **52 directed 5-cycles**, wins **15,048 of 40,320 placements**, and preserves every placement won by cycle following. The number 52 is optimal for the stated 5-cycle rescue objective within a restricted strategy family. **The optimal total winning probability over all strategies remains unknown.**
