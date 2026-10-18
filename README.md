@@ -1,7 +1,5 @@
 # The 100 Prisoners Problem with One Allowed Failure
 
-[日本語 / Japanese](README.ja.md) · [Latest reproduction guide](docs/post-round8-reproduction.md) · [General-law proofs](docs/post-round8-general-laws.en.md) · [Round 8 update](docs/round8-update.md) · [Round 7 proof and verification](docs/round7-verification.en.md)
-
 Documentation updated **2026-10-18**, including progress after Round 8. This repository records a research relay involving ChatGPT, Claude, Codex, and Perplexity. It separates mathematical proofs, explicit constructions checked by exhaustive computation, restricted searches, and unresolved optimality questions. The earlier Round 8 release and its 2026-10-13 checks remain historical records.
 
 This is a **complete distribution**: extract the ZIP once; the earlier base and overlay are already included.
