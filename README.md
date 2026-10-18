@@ -1,8 +1,12 @@
-﻿# The 100 Prisoners Problem with One Allowed Failure
+# The 100 Prisoners Problem with One Allowed Failure
 
-[日本語 / Japanese](README.ja.md) · [Reproduction guide](docs/reproduction.md) · [Round 7 proof and verification](docs/round7-verification.en.md)
+[日本語 / Japanese](README.ja.md) · [Latest reproduction guide](docs/post-round8-reproduction.md) · [General-law proofs](docs/post-round8-general-laws.en.md) · [Round 8 update](docs/round8-update.md) · [Round 7 proof and verification](docs/round7-verification.en.md)
 
-Documentation updated **2026-10-13**; research record through **2026-10-12, Round 8**, with the four saved Round 8 construction audits rerun on **2026-10-13**. This repository records a research relay involving ChatGPT, Claude, Codex, and Perplexity. It separates mathematical proofs, explicit constructions checked by exhaustive computation, restricted searches, and unresolved optimality questions.
+Documentation updated **2026-10-18**, including progress after Round 8. This repository records a research relay involving ChatGPT, Claude, Codex, and Perplexity. It separates mathematical proofs, explicit constructions checked by exhaustive computation, restricted searches, and unresolved optimality questions. The earlier Round 8 release and its 2026-10-13 checks remain historical records.
+
+This is a **complete distribution**: extract the ZIP once; the earlier base and overlay are already included.
+
+The central questions are **what changes when zero allowed failures becomes one, why it changes, and which laws hold for general $n=2m$**. Eight-person constructions and exclusions are part of that investigation; their numerical boundary does not by itself settle the 100-person problem.
 
 **Allowing one failure makes it possible to strictly improve on ordinary cycle following.** A general construction guarantees an improvement of at least $1/495000$ in the 100-person problem. For eight prisoners, the best saved construction rescues **52 directed 5-cycles and three directed 7-cycles**, wins **15,051 of 40,320 placements** (about **37.328869%**), and preserves every placement won by cycle following. The number 52 is optimal for the stated 5-cycle rescue objective within a restricted strategy family. **The optimal total winning probability over all strategies remains unknown.**
 
@@ -43,10 +47,10 @@ $$
 \sum_{t=1}^{m-1}t\,[p_t>p_{t+1}]\bmod m\right).
 $$
 
-Each class satisfies the required deletion condition; choosing a largest class guarantees
+Each class satisfies the required deletion condition. The post-Round-8 proof additionally shows that **every class has exactly $(2m-2)!/m!$ words**, so the fixed class $(0,0)$ already gives
 
 $$
-P_{\mathrm{new}}-P_{\mathrm{CF}}\ge\frac{1}{2m^2(2m-1)}.
+P_{\mathrm{new}}-P_{\mathrm{CF}}=\frac{1}{2m^2(2m-1)}.
 $$
 
 Thus the 100-person problem has an attainable winning probability of at least
@@ -71,7 +75,7 @@ $$
 
 This is a construction theorem for all $m\ge3$, not an optimality theorem. An anchor harmed on an old winning placement must have its prescribed predecessor outside its own cycle; two anchors cannot suffer such a loss simultaneously. Conversely, rescuing all anchors on a long cycle forces its anchor order to be $T$.
 
-The [general proof](repro/S_T_set_proof_2026_10_09.md) is archived in Japanese. The earlier ordered strategy $S_T$ has the same **group winning set**, but individual successes and box-opening paths need not agree. Historical exhaustive checks gave $294/720$ for six prisoners and $14832/40320$ for eight, with zero lost CF wins. Those set-strategy checks are separate from the current Round 7 verification suite.
+The [general proof](repro/S_T_set_proof_2026_10_09.md) is archived in Japanese. The earlier ordered strategy $S_T$ has the same **group winning set**, but individual successes and box-opening paths need not agree. Historical exhaustive checks gave $294/720$ for six prisoners and $14832/40320$ for eight, with zero lost CF wins. Those set-strategy checks are separate from the Round 7 verification suite.
 
 ## Small-instance results and evidence
 
@@ -153,7 +157,73 @@ In particular, $R_5=52$ and $R_6\ge1$ force $E=2$, $F_5=0$, $M=210$, and $R_6=1$
 
 A separate [order-5 symmetric certificate](<results/8人囚人問題の混合長巡回救済/Astra/order5_symmetric_210rules_n8.json>) uses 210 rules and wins 15,048 placements with no CF loss. It disproves an unconditional extension of the 208-rule “symmetry group is a 2-group” conclusion to 210 rules. For the specific **order-5 invariant, $R_5=52$, at-most-210-rule branch**, the saved finite analysis and independent audit completed **6,432 branches with zero `UNKNOWN`**, giving $R_7=0$. This conclusion does not exclude asymmetric strategies. The [research report](<results/8人囚人問題の混合長巡回救済/Astra/round8_research_report_ja.txt>) and [machine-readable summary](<results/8人囚人問題の混合長巡回救済/Astra/research_summary.json>) explain these scoped results.
 
-**Unresolved searches.** The six saved general CP-SAT runs ended `UNKNOWN`. The two immediate routes to 15,052 wins remain open: $R_5=52,R_6=1,R_7\ge2$ and $R_5=52,R_6=0,R_7\ge4$. Trades with $R_5\le51$ are also unresolved. `INFEASIBLE` results for full-star-only or selected symmetry models do not settle these general questions. The local enumeration, clique and symmetry branch results above are archived Round 8 results; this README update reran the four saved construction audits, not the CP-SAT searches or all finite branch analyses. The eight-person results do not change the general 100-person lower bound or establish optimality for the 99-success objective.
+**Search status at the end of Round 8.** The six saved general CP-SAT runs ended `UNKNOWN`. The two immediate routes to 15,052 wins were $R_5=52,R_6=1,R_7\ge2$ and $R_5=52,R_6=0,R_7\ge4$. Trades with $R_5\le51$ were unresolved as well. Those `UNKNOWN` runs are not exclusion evidence. Later progress closes specified nonstar branches below; it does not settle the overall questions. The local enumeration, clique and symmetry results above are archived Round 8 results, distinct from the post-Round-8 checks.
+
+## Progress after Round 8, through 2026-10-18
+
+### General laws: individual success and simultaneous losses
+
+CF itself gains no placements from allowing one failure: its failure count is zero or at least $m+1$. For **any adaptive strategy**, each prisoner's success probability is at most $1/2$, so the number $X$ of successful prisoners satisfies $\mathbb E[X]\le m$ and $\Pr(X\ge2m-1)\le m/(2m-1)$. This weak all-strategy upper bound does not determine the optimum. The constructions improve the **joint pattern of failures**, while individual success probabilities can remain exactly $1/2$.
+
+A general loss-witness criterion makes pointwise preservation of CF wins precise. For two distinct prisoners, combine their observed arrows and original CF cycles from failed runs. Their losses can coexist in a CF-winning placement exactly when this union is a consistent partial injection whose path and cycle components all have at most $m$ vertices. Thus preserving every CF win means ruling out every such pair. For final-box modifications, this reduces to at most one rule per directed loss $m$-cycle and at most one active side of each complementary support pair. This criterion does not cover exchanges that deliberately sacrifice some CF wins.
+
+The checksum construction now has a self-contained equal-class-size proof. Every residue pair has $(2m-2)!/m!$ words, and fixed residues $(0,0)$ attain the existing general gain exactly. A prisoner can recover the missing label from the first checksum and test its insertion positions using the second, requiring $O(m^2)$ comparisons rather than a stored table of all words. This confirms and makes explicit the earlier lower bound; it does not improve its value.
+
+For **CF on the first $m-1$ openings, only the final box changed, and every CF-winning placement preserved**, counting correct rule-placement incidences across all long-cycle lengths gives
+
+$$
+\Delta P\le\frac{H_{2m-2}-H_{m-1}}{2m^2},\qquad m\ge2,
+$$
+
+where $H_j=\sum_{r=1}^j1/r$. Full $2m$-cycles cannot be rescued because opposite history supports are complementary; at most $m$ prisoners can succeed. The gain upper bound is $O(m^{-2})$ **within this class**. Earlier changes and strategies trading old CF wins are outside it. The older $1/(2m^3)$ bound concerns only the $(m+1)$-cycle contribution, or the total gain of the anchored deletion-code family.
+
+| 100 prisoners, 50 openings each | Winning probability | Evidence and scope |
+| --- | ---: | --- |
+| Ordinary CF | 31.1827820690% | Exact formula |
+| Fixed checksum class | 31.1829840892% | Explicit construction; gain $1/495000$ |
+| CF-preserving final-box class | At most 31.1965434924% | General upper bound; attainment unproved |
+
+The lower construction adds **0.0002020202 percentage points**; the restricted upper bound permits at most **0.0137614234 percentage points**. The [English proof supplement](docs/post-round8-general-laws.en.md) gives the arguments and exact arithmetic. Fresh finite checks verify the supplied single-block and checksum strategies on every four-, six-, and eight-person placement, including checksum counts 11/24, 284/720, and 14,916/40,320, with zero lost CF wins. These checks do not replace the general proofs or enumerate $100!$ placements.
+
+### Eight-person constructions and exclusions
+
+Saved rule tables exhibit different ways to attain the same score. The new mixed-length table reaches **15,051** with $(R_5,R_6,R_7)=(52,1,1)$, while the earlier baseline has $(52,0,3)$. The [direct simulation record](verification/post-round8/certificates.json) checks the following tables on all 40,320 placements, with zero lost CF wins:
+
+| Saved table | Rules | $R_5$ | $R_6$ | $R_7$ | Wins |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Baseline `baseline15051` | 208 | 52 | 0 | 3 | 15,051 |
+| Neutral extension `neutral15051` | 210 | 52 | 0 | 3 | 15,051 |
+| Mixed-length `new15051` | 210 | 52 | 1 | 1 | 15,051 |
+| Standard-three-flip control | 208 | 52 | 0 | 2 | 15,050 |
+| Full-star six-correct counterexample | 208 | 52 | 0 | 2 | 15,050 |
+
+The completed nonstar exclusion concerns **52 four-rule 5-cycle blocks plus at most two extra rules, first three boxes CF, only the fourth changed, all CF wins preserved, and $R_6=0$**. An orientation chooses one side of each of the 35 complementary four-element support pairs. Here **full-star** means all 35 four-subsets avoiding one label, up to relabeling. In this model, **every nonstar orientation is excluded for $R_7\ge4$**; the full-star case remains partly open.
+
+| Finite stage | Completed evidence |
+| --- | --- |
+| Standard three-support flip | 248 triangle orbits; 913 pair-union representatives and 2,938 completion cores exhausted |
+| Four-support flip | 48 triangle representatives and 21,097 composite cores excluded |
+| General normalized witness screen | 70 cores; 6,250,496 support assignments; 27,423 distinct surviving orientations |
+| Minimum support degree at least 8 | 22,610 orientations reduced to 1,378 $S_8$ orbits |
+
+Among those 1,378 orbits, **1,372 have exact rational dual exclusions**, checked with Python `Fraction`. One further orbit is excluded by a completed **CBC integer-solver** run, agreeing with the original CP-SAT result. The remaining five capacity-feasible orbits are excluded by **two independently built complete rule models**, both terminating `INFEASIBLE`. The degree-1-through-7 families are joined by their saved structural, capacity, and completed rule-model exclusions. These evidence types are kept separate; time-limited `UNKNOWN` runs are not used as impossibility proofs.
+
+In the full-star family, **3,735 cores with a particular set of 18 blocks fixed** were excluded, but other witness branches remain open. A separate 15,050-win full-star example rescues a 7-cycle with **exactly six successful members**. It invalidates the proposed reduction that every rescued 7-cycle must have all seven succeed. The best saved attainable count remains **15,051/40,320**; no global optimality follows from these exclusions.
+
+Claude Desktop's independent **`AUDIT_PASS` applies to the standard three-flip result**. Its newer review of the all-nonstar chain is **`PARTIAL`**, with some cited scripts unavailable in that review. It is not a completed second audit of all nonstar orientations. The broader conclusion is supported by the saved Codex computations and independent implementations documented in the [source and evidence map](docs/post-round8-sources.md).
+
+### Reproduce this update
+
+The source map replaces missing continuous conversation logs with file provenance, saved results, and explicit reproduction limits. It also identifies the two [shared conversations](https://chatgpt.com/share/6ad4a125-8c20-83ee-b87e-ca6419d91922) [provided by the author](https://chatgpt.com/share/6ad4a13c-792c-83ec-813c-ee3d16c21a9a); they are context, not executable certificates.
+
+From the repository root:
+
+```powershell
+python -X utf8 repro/check_integrity.py
+python -X utf8 repro/run_post_round8_verification.py
+```
+
+See the [post-Round-8 reproduction guide](docs/post-round8-reproduction.md) and [fresh check record](verification/post-round8/current_checks.json). The quick checks verify saved constructions, general-law implementation checks, and archived evidence consistency. Heavy enumeration and solver reruns have separate dependencies and commands; the quick runner does not repeat every historical exclusion.
 
 ## Reproduce the saved constructions
 
@@ -163,7 +233,7 @@ From the repository root, run Python 3 with its standard library:
 python -X utf8 repro/run_verification.py
 ```
 
-The **2026-10-12 Round 7 release** passed all **13 tasks**. The runner checks the Round 4 suite, independently audits the three Round 7 certificates, simulates each 52-cycle construction with two implementations, checks selected Round 6/7 strategies, scans the 867 local cases, and reruns the 51-cycle extension test. See [current check results](verification/current_checks.json) and the [reproduction guide](docs/reproduction.md). It verifies saved constructions; it does not rerun the heuristic or CP-SAT searches.
+The **2026-10-12 Round 7 release** passed all **13 tasks**. The runner checks the Round 4 suite, independently audits the three Round 7 certificates, simulates each 52-cycle construction with two implementations, checks selected Round 6/7 strategies, scans the 867 local cases, and reruns the 51-cycle extension test. See [Round 7 check results](verification/current_checks.json) and the [reproduction guide](docs/reproduction.md). It verifies saved constructions; it does not rerun the heuristic or CP-SAT searches.
 
 The three primary Round 7 strategies are [symmetric](repro/best52_costar_Z4_n8.json), [split unused words](repro/best52_costar_splitY_n8.json), and [weighted threshold family](repro/best52_threshold_n8.json). A JSON rule `[i, history, target]` means that prisoner `i`, after seeing that exact ordered history, opens box `target` next. Their `mixed-n8-v1` schema also permits earlier jumps; **these three certificates contain no early rules**, only 208 histories of length three for the fourth box. The English supplement specifies precedence, stopping, and fallback behavior.
 
@@ -177,9 +247,10 @@ The [auditor](<results/8ラウンド5・6・7巡回の共存条件と競合不�
 
 ## Open questions and limits
 
-- The best total winning count for eight prisoners, including final-box strategies that also rescue length-6 or length-7 cycles, is unknown. **15,051 is the best saved attainable count, not a proved total-win optimum.** The immediate Round 8 targets are $R_5=52,R_6=1,R_7\ge2$ and $R_5=52,R_6=0,R_7\ge4$; trades with $R_5\le51$ remain open.
+- The best total winning count for eight prisoners, including final-box strategies that also rescue length-6 or length-7 cycles, is unknown. **15,051 is the best saved attainable count, not a proved total-win optimum.** For $R_5=52,R_6=0,R_7\ge4$, nonstar orientations have been excluded in the stated block-plus-extras model; the remaining full-star witness branches are open. The $R_5=52,R_6=1,R_7\ge2$ route outside excluded branches and trades with $R_5\le51$ remain open.
 - The best unrestricted adaptive strategy for six prisoners, or for 100 prisoners with one allowed failure, is unknown. The six-person 294 strategy should not be treated as a general optimal strategy.
 - For CF-preserving final-box modifications, the number of rescued directed $(m+1)$-cycles obeys $N_{m+1}\le\lfloor(2m-1)!/(m\,m!)\rfloor$. Their probability contribution is at most $1/(2m^3)$. This bound concerns that cycle-length objective; it is not a bound on the total gain of broader strategies.
+- The harmonic bound controls total gain in the CF-preserving final-box class. The best general gain when earlier openings change, or when some old CF wins may be sacrificed, remains undetermined. The loss-witness criterion alone does not supply an improved construction.
 - Attainment of the general cycle-count bound for $m\ge5$, classification of support families admitting 52 cycles at $m=4$, and safe combinations of multiple early jumps remain open. The Round 7 source contains larger-instance search observations; they were not independently rechecked for this release.
 - Novelty in the literature has not been established. Classical all-success optimality results do not establish optimality for this one-failure objective.
 
@@ -193,9 +264,9 @@ Related literature includes [Curtin and Warshauer, *The Locker Puzzle*](https://
 | --- | --- |
 | [log1](log/log1.txt) | From the classical puzzle to the one-failure variant; includes claims corrected later. |
 | [log2](log/log2.txt), [log3](log/log3.txt) | Four-person $13/24$ construction, upper bound, and audit. |
-| [log4](<log/log4-99人.txt>) | Single-cycle improvement for the 100-person setting. |
-| [log5](<log/log5-Perplexity.txt>), [log6](<log/log6-Claude.txt>) | Literature investigation, six-person strategies, and general constructions. |
-| [log7](<log/log7違い.txt>) | Different strategy mechanisms and losses from unsafe combinations. |
+| [log4](log/log4-99人.txt) | Single-cycle improvement for the 100-person setting. |
+| [log5](log/log5-Perplexity.txt), [log6](log/log6-Claude.txt) | Literature investigation, six-person strategies, and general constructions. |
+| [log7](log/log7違い.txt) | Different strategy mechanisms and losses from unsafe combinations. |
 | [log8](log/log8.txt) | Round 4 packing, Theorem M, and proof corrections. |
 | [log9](log/log9.txt) | Analysis of the 294 strategy and the ordered anchor theorem. |
 | [log10](log/log10.txt) | Set-based anchor conjecture and mixed-strategy research direction; the later general proof is linked above. |
@@ -205,3 +276,5 @@ Related literature includes [Curtin and Warshauer, *The Locker Puzzle*](https://
 | [log14](log/log14.txt) | Round 8: free-support reduction to 468 candidates, conditional $R_7\le11$, order-5 symmetry branch, and independent audit; general searches remain `UNKNOWN`. |
 
 Statements such as “optimal,” “upper bound,” or “unproved” in historical conversations describe their state at the time. Use the scoped conclusions above and the current verification records when citing the repository's present results.
+
+The 2026-10-13 incremental package also reruns the saved local and symmetric finite analyses with `python -X utf8 repro/run_round8_verification.py`. Its eight tasks and fresh results are documented in the [Round 8 update guide](docs/round8-update.md) and [check record](verification/round8/current_checks.json). The historical Round 7 record remains separate.
